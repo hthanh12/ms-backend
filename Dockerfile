@@ -19,7 +19,7 @@ RUN apk update && \
     x264-dev \
     libvpx-dev \
     ca-certificates \
-    && rm -rf /var/cache/apk/* # Clean up apk cache
+    && rm -rf /var/cache/apk/*
 
 # Install pnpm globally in the container.
 RUN npm install -g pnpm
@@ -52,7 +52,7 @@ RUN apk update && \
     x264 \
     libvpx \
     ca-certificates \
-    && rm -rf /var/cache/apk/* # Clean up apk cache
+    && rm -rf /var/cache/apk/*
 
 # Create a temporary directory if it doesn't exist and ensure permissions.
 RUN mkdir -p /tmp/converted-videos && chmod 777 /tmp/converted-videos
