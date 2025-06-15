@@ -6,11 +6,8 @@ FROM node:20-alpine AS builder
 # Set the working directory in the container
 WORKDIR /app
 
-# Install build-base, g++, and necessary FFmpeg dependencies.
-# 'build-base' and 'g++' are crucial for compiling native Node.js modules (like sharp).
-# 'ffmpeg' is for video conversion.
-# 'libx264-dev' and 'libvpx-dev' provide H.264 and VP8/VP9 codecs for FFmpeg.
-# 'ca-certificates' is often good practice for SSL/TLS connections.
+# Ensure repositories are updated and 'community' repo is enabled for multimedia packages.
+# 'libx264-dev' and 'libvpx-dev' are part of community.
 RUN apk update && \
     apk add --no-cache \
     vips-dev \
@@ -18,10 +15,11 @@ RUN apk update && \
     build-base \
     g++ \
     ffmpeg \
-    libx264-dev \
+    # Using the standard Alpine package names for x264 and vpx development libraries
+    x264-dev \
     libvpx-dev \
     ca-certificates \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* # Clean up apk cache
 
 # Install pnpm globally in the container.
 RUN npm install -g pnpm
@@ -30,7 +28,6 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
 
 # Install ALL dependencies (including devDependencies) for the build stage.
-# This is crucial because 'pnpm run build' often needs devDependencies like 'typescript'.
 RUN pnpm install
 
 # Copy the TypeScript source code and configuration.
@@ -46,17 +43,16 @@ FROM node:20-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-# Install FFmpeg and other runtime dependencies needed for sharp, etc.
-# IMPORTANT: Run apk update before apk add to ensure package lists are fresh.
-# Corrected 'libx264-dev' to 'libx264' (runtime version) and 'libvpx-dev' to 'libvpx' (runtime version)
+# Ensure repositories are updated for the final image.
+# Install runtime dependencies for FFmpeg and Sharp.
 RUN apk update && \
     apk add --no-cache \
     vips-dev \
     ffmpeg \
-    libx264 \
+    x264 \
     libvpx \
     ca-certificates \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* # Clean up apk cache
 
 # Create a temporary directory if it doesn't exist and ensure permissions.
 RUN mkdir -p /tmp/converted-videos && chmod 777 /tmp/converted-videos
