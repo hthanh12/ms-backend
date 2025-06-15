@@ -56,7 +56,7 @@ RUN apk update && \
     libx264 \
     libvpx \
     ca-certificates \
-    && rm -rf /var/cache/apk/* # Clean up apk cache
+    && rm -rf /var/cache/apk/*
 
 # Create a temporary directory if it doesn't exist and ensure permissions.
 RUN mkdir -p /tmp/converted-videos && chmod 777 /tmp/converted-videos
