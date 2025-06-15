@@ -1,3 +1,4 @@
+
 # Stage 1: Build the TypeScript application
 FROM node:20-alpine AS builder
 
@@ -62,7 +63,7 @@ RUN mkdir -p /tmp/converted-videos && chmod 777 /tmp/converted-videos
 # For simplicity and robust build, copy all then rely on --prod in builder.
 # A more advanced pnpm Docker pattern might involve `pnpm deploy --prod`
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules # This will contain dev dependencies too, if pnpm install was full
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
 # Expose the port the Express app runs on.
