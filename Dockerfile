@@ -7,7 +7,6 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Ensure repositories are updated and 'community' repo is enabled for multimedia packages.
-# 'libx264-dev' and 'libvpx-dev' are part of community.
 RUN apk update && \
     apk add --no-cache \
     vips-dev \
@@ -15,11 +14,10 @@ RUN apk update && \
     build-base \
     g++ \
     ffmpeg \
-    # Using the standard Alpine package names for x264 and vpx development libraries
-    x264-dev \
+    x264-dev \ 
     libvpx-dev \
     ca-certificates \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* # Clean up apk cache
 
 # Install pnpm globally in the container.
 RUN npm install -g pnpm
@@ -52,7 +50,7 @@ RUN apk update && \
     x264 \
     libvpx \
     ca-certificates \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* 
 
 # Create a temporary directory if it doesn't exist and ensure permissions.
 RUN mkdir -p /tmp/converted-videos && chmod 777 /tmp/converted-videos
@@ -69,4 +67,5 @@ EXPOSE 3001
 ENV NODE_ENV=production
 
 # Command to run the compiled JavaScript application.
-CMD ["pnpm", "start"]
+# This should directly execute the Node.js application, not call pnpm.
+CMD ["node", "dist/index.js"]
