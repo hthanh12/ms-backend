@@ -1,7 +1,6 @@
 # Dependencies
 /node_modules
 /.pnpm-store # pnpm's global content-addressable store (if it's ever created in project root)
-pnpm-lock.yaml
 
 # Build artifacts
 /dist
